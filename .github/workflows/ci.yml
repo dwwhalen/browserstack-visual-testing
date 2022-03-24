@@ -1,0 +1,64 @@
+name: run my vanilla Cypress tests
+on: 
+  push:
+    branches:
+      - 'main'
+      - 'feature/**'
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - ".github/workflows/**"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node16.14.0-slim-chrome99-ff97
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: install and build the application
+        run: |
+          npm install
+          npm run build
+      - name: run unit tests
+        run: |
+          npm run test:unit    
+      - name: Save build folder
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          if-no-files-found: error
+          path: dist
+
+  cypress-chrome-tests:
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    container: cypress/browsers:node16.14.0-slim-chrome99-ff97
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download the build folders
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+
+      - name: "UI Tests - Chrome"
+        uses: cypress-io/github-action@v2
+        timeout-minutes: 10
+        with:
+          record: false
+          start: npm run test:e2e:ci
+          browser: chrome
+          # group: "UI - Chrome"
+        env:
+          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
+          # CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  
