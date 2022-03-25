@@ -1,10 +1,6 @@
 name: run my vanilla Cypress tests
 on: 
   push:
-  pull_request:
-    branches: [main]
-    paths-ignore:
-      - ".github/workflows/**"
   workflow_dispatch:
 
 jobs:
@@ -44,7 +40,10 @@ jobs:
         with:
           name: dist
           path: dist
-
+          
+      - name: Install dependencies
+        run: npm ci
+        
       - name: "UI Tests - Chrome"
         uses: percy/exec-action@v0.3.1
         timeout-minutes: 10
