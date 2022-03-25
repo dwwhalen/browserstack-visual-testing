@@ -1,6 +1,13 @@
 name: run my vanilla Cypress tests
 on: 
   push:
+    branches:
+      - 'main'
+      - 'feature/**'
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - ".github/workflows/**"
   workflow_dispatch:
 
 jobs:
@@ -40,19 +47,16 @@ jobs:
         with:
           name: dist
           path: dist
-          
-      - name: Install dependencies
-        run: npm ci
-        
+
       - name: "UI Tests - Chrome"
-        uses: percy/exec-action@v0.3.1
+        uses: cypress-io/github-action@v2
         timeout-minutes: 10
         with:
-          command: "npm run test:e2e:ci"
+          record: false
+          start: npm run test:e2e:ci
+          browser: chrome
           # group: "UI - Chrome"
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
           # CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  
