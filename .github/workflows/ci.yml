@@ -1,9 +1,6 @@
 name: run my vanilla Cypress tests
 on: 
   push:
-    branches:
-      - 'main'
-      - 'feature/**'
   pull_request:
     branches: [main]
     paths-ignore:
