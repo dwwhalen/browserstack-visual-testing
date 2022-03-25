@@ -54,7 +54,7 @@ jobs:
         with:
           record: false
           start: npm run test:e2e:ci
-          browser: chrome
+          # browser: chrome
           # group: "UI - Chrome"
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
