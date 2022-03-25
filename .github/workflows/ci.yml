@@ -46,12 +46,10 @@ jobs:
           path: dist
 
       - name: "UI Tests - Chrome"
-        uses: cypress-io/github-action@v2
+        uses: percy/exec-action@v0.3.1
         timeout-minutes: 10
         with:
-          record: false
-          start: npm run test:e2e:ci
-          browser: chrome
+          command: "npm run test:e2e:ci"
           # group: "UI - Chrome"
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
